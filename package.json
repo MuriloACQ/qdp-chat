@@ -1,0 +1,22 @@
+{
+  "name": "qdp-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MuriloACQ/qdp-chat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MuriloACQ/qdp-chat/issues"
+  },
+  "homepage": "https://github.com/MuriloACQ/qdp-chat#readme",
+  "dependencies": {
+    "socket.io": "^1.7.2"
+  }
+}
