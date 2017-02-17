@@ -46,7 +46,7 @@ function messageBroadcast(command) {
     if (user.isAdmin && command.data) {
         let users = userService.getAll();
         for (let toUserId in users) {
-            if(users.hasOwnProperty(toUserId)) {
+            if (users.hasOwnProperty(toUserId)) {
                 let toUser = users[toUserId];
                 if (command.user === toUser.id) continue;
                 let socket = socketService.getSocketById(toUser.socket);
@@ -80,9 +80,35 @@ function usersAction(command) {
     switch (command.action) {
         case 'count':
             return usersCount(command);
+        case 'list':
+            return usersList(command);
         default:
             return returnError();
     }
+}
+
+function usersList(command) {
+    let user = userService.getUserById(command.user);
+    if (user.isAdmin) {
+        let keys = Object.keys(userService.getAll());
+        let index = keys.indexOf(command.user);
+        keys.splice(index, 1);
+        return keys.join(', ');
+    }
+    return returnError();
+}
+
+function usersDrop(command) {
+    let user = userService.getUserById(command.user);
+    if (user.isAdmin && command.data) {
+        let userToDrop = userService.getUserById(command.data);
+        if (userToDrop) {
+            let socket = socketService.getSocketById(userToDrop.socket);
+            socket.disconnect();
+            return returnOK();
+        }
+    }
+    return returnError();
 }
 
 function usersCount(command) {
