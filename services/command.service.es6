@@ -45,10 +45,13 @@ function messageBroadcast(command) {
     let user = userService.getUserById(command.user);
     if (user.isAdmin && command.data) {
         let users = userService.getAll();
-        for (let toUser of users) {
-            if (command.user === toUser.id) continue;
-            let socket = socketService.getSocketById(toUser.socket);
-            socket.emit('message', command.data);
+        for (let toUserId in users) {
+            if(users.hasOwnProperty(toUserId)) {
+                let toUser = users[toUserId];
+                if (command.user === toUser.id) continue;
+                let socket = socketService.getSocketById(toUser.socket);
+                socket.emit('message', command.data);
+            }
         }
         return returnOK();
     }
