@@ -93,7 +93,7 @@ function usersList(command) {
         let keys = Object.keys(userService.getAll());
         let index = keys.indexOf(command.user);
         keys.splice(index, 1);
-        return keys.join(', ');
+        return `you:${command.user}, other:${keys.join(',')}`;
     }
     return returnError();
 }
