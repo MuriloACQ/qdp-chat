@@ -36,7 +36,10 @@ function messageHandshakeHandler(socket) {
 function messageHandler(userId, message) {
     let command = commandService.parse(message, userId);
     if (command) {
-        commandService.executeCommand(command)
+        let response = commandService.executeCommand(command);
+        let user = userService.getUserById(userId);
+        let socket = socketService.getSocketById(user.socket);
+        socket.emit('message', response);
     } else {
         bridgeService.relayMessage(userId, message);
     }
