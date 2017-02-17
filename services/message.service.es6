@@ -2,6 +2,7 @@ const config = require('../config/env.config.es6');
 const socketService = require('./socket.service.es6');
 const userService = require('./user.service.es6');
 const bridgeService = require('./bridge.service.es6');
+const commandService = require('./command.service.es6');
 
 function messageHandshakeHandler(socket) {
     let userId = null;
@@ -24,7 +25,7 @@ function messageHandshakeHandler(socket) {
         bridgeService.waitForBridge(userId);
     });
     socket.on('disconnect', () => {
-        if(userId) {
+        if (userId) {
             bridgeService.clearBridgeUser(userId);
             userService.removeUser(userId);
         }
@@ -33,7 +34,12 @@ function messageHandshakeHandler(socket) {
 }
 
 function messageHandler(userId, message) {
-    bridgeService.relayMessage(userId, message);
+    let command = commandService.parse(message, userId);
+    if (command) {
+        commandService.executeCommand(command)
+    } else {
+        bridgeService.relayMessage(userId, message);
+    }
 }
 
 exports.messageHandshakeHandler = messageHandshakeHandler;

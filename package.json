@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/MuriloACQ/qdp-chat#readme",
   "dependencies": {
+    "command-line-args": "^4.0.1",
     "socket.io": "^1.7.2"
   }
 }
