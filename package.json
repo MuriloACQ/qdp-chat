@@ -18,6 +18,7 @@
   "homepage": "https://github.com/MuriloACQ/qdp-chat#readme",
   "dependencies": {
     "command-line-args": "^4.0.1",
+    "promise-mysql": "^3.0.0",
     "socket.io": "^1.7.2"
   }
 }
