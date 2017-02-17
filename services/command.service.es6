@@ -82,6 +82,8 @@ function usersAction(command) {
             return usersCount(command);
         case 'list':
             return usersList(command);
+        case 'drop':
+            return usersDrop(command);
         default:
             return returnError();
     }
