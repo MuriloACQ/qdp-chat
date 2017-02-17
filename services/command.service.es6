@@ -1,6 +1,7 @@
 const userService = require('../services/user.service.es6');
 const config = require('../config/env.config.es6');
 const phraseDao = require('../daos/phrase.dao.es6');
+const socketService = require('../services/socket.service.es6');
 
 function parse(message, userId) {
     let command = null;
@@ -24,9 +25,34 @@ function executeCommand(command) {
             return usersAction(command);
         case 'phrases':
             return phrasesAction(command);
+        case 'messages':
+            return messageAction(command);
         default:
             return returnError();
     }
+}
+
+function messageAction(command) {
+    switch (command.action) {
+        case 'broadcast':
+            return messageBroadcast(command);
+        default:
+            return returnError();
+    }
+}
+
+function messageBroadcast(command) {
+    let user = userService.getUserById(command.user);
+    if (user.isAdmin && command.data) {
+        let users = userService.getAll();
+        for (let toUser of users) {
+            if (command.user === toUser.id) continue;
+            let socket = socketService.getSocketById(toUser.socket);
+            socket.emit('message', command.data);
+        }
+        return returnOK();
+    }
+    return returnError();
 }
 
 function phrasesAction(command) {
