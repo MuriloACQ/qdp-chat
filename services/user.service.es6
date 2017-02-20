@@ -23,7 +23,12 @@ function countUsers() {
     return Object.keys(users).length;
 }
 
+function getAll() {
+    return users;
+}
+
 exports.addUser = addUser;
 exports.removeUser = removeUser;
 exports.getUserById = getUserById;
 exports.countUsers = countUsers;
+exports.getAll = getAll;

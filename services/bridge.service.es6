@@ -1,5 +1,6 @@
 const socketService = require('./socket.service.es6');
 const userService = require('./user.service.es6');
+const phraseDao = require('../daos/phrase.dao.es6');
 const config = require('../config/env.config.es6');
 
 const bridges = {};
@@ -12,6 +13,13 @@ function relayMessage(userId, message) {
         let user = userService.getUserById(bridge.to);
         let socket = socketService.getSocketById(user.socket);
         socket.emit('message', message);
+    } else {
+        let user = userService.getUserById(userId);
+        let socket = socketService.getSocketById(user.socket);
+        phraseDao.get().then(rows => {
+            let response = rows.length ? rows[0].phrase : 'queijineos';
+            setTimeout(socket.emit.bind(socket, 'message', response), 1250);
+        });
     }
 }
 
@@ -45,14 +53,14 @@ function clearBridgeUser(userId) {
         deleteBridge(bridge.from, bridge.to);
     }
     let index = waitingBridges.indexOf(userId);
-    if(index >= 0) {
+    if (index >= 0) {
         waitingBridges.splice(index, 1);
     }
     connectAwaitingUsers();
 }
 
 function connectAwaitingUsers() {
-    if(waitingBridges.length > 1) {
+    if (waitingBridges.length > 1) {
         let userIdA = waitingBridges.pop();
         let userIdB = waitingBridges.pop();
         createBridge(userIdA, userIdB);
@@ -69,7 +77,7 @@ function shuffleBridges() {
     let numberOfBridgesToShuffle = parseInt(userOnBridges.length * percent);
     userOnBridges.shuffle();
     let toShuffle = userOnBridges.slice(0, numberOfBridgesToShuffle);
-    for(let userIdA of toShuffle) {
+    for (let userIdA of toShuffle) {
         let bridge = bridges[userIdA];
         deleteBridge(bridge.from, bridge.to);
     }
